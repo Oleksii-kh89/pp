@@ -1,18 +1,19 @@
 package database.requests
 
-import io.gatling.core.Predef.{css, exec, jsonPath, regex, scenario}
-import io.gatling.http.Predef.http
-import io.gatling.core.Predef._
-import io.gatling.http.Predef._
-
 object RequestsFlood {
+
+  val authenticityTokenRegex = """name="authenticity_token" type="hidden" value="(.+?)""""
+  val stepIdRegex = """name="challenger\[step_id\]" type="hidden" value="(.+?)""""
+  val orderSelectedRegex = """<input class="radio_buttons optional".+? value="(.+?)" />"""
+  val orderRegex = """<input id="challenger_order_[0-9]+" name="(.+?)" type="hidden" value="[0-9]+" />"""
+  val orderValueRegex = """<input id="challenger_order_[0-9]+" name=".+?" type="hidden" value="([0-9]+)" />"""
 
   object MainPage {
     def openHomePage = {
       exec(http("Open Home Page")
         .get("/")
-        .check(regex("""name="authenticity_token" type="hidden" value="(.+?)"""").find.saveAs("authenticityToken"))
-        .check(regex("""name="challenger\[step_id\]" type="hidden" value="(.+?)"""").find.saveAs("challengerStepID")))
+        .check(regex(authenticityTokenRegex).find.saveAs("authenticityToken"))
+        .check(regex(stepIdRegex).find.saveAs("challengerStepID")))
     }
   }
 
@@ -27,7 +28,7 @@ object RequestsFlood {
           ("challenger[step_number]", "1"),
           ("commit", "Start")
         ))
-        .check(regex("""name="challenger\[step_id\]" type="hidden" value="(.+?)"""").find.saveAs("challengerStepID")))
+        .check(regex(stepIdRegex).find.saveAs("challengerStepID")))
 
     }
 
@@ -42,9 +43,9 @@ object RequestsFlood {
           ("challenger[age]", "31"),
           ("commit", "Next")
         ))
-        .check(regex("""name="challenger\[step_id\]" type="hidden" value="(.+?)"""").find.saveAs("challengerStepID"))
+        .check(regex(stepIdRegex).find.saveAs("challengerStepID"))
         .check(css(".collection_radio_buttons").findAll.saveAs("challengerLargestOrderAll"))
-        .check(regex("""<input class="radio_buttons optional".+? value="(.+?)" />""").findAll.saveAs("challengerOrderSelectedAll"))
+        .check(regex(orderSelectedRegex).findAll.saveAs("challengerOrderSelectedAll"))
       )
         .exec(session => {
           val challengerLargestOrder = session("challengerLargestOrderAll").as[Seq[String]].maxBy(x => x.toInt)
@@ -66,9 +67,9 @@ object RequestsFlood {
           ("challenger[order_selected]", "${challengerOrderSelected}"),
           ("commit", "Next")
         ))
-        .check(regex("""name="challenger\[step_id\]" type="hidden" value="(.+?)"""").find.saveAs("challengerStepID"))
-        .check(regex("""<input id="challenger_order_[0-9]+" name="(.+?)" type="hidden" value="[0-9]+" />""").findAll.saveAs("challengerOrderValue"))
-        .check(regex("""<input id="challenger_order_[0-9]+" name=".+?" type="hidden" value="([0-9]+)" />""").findAll.saveAs("challengerOrderNumber"))
+        .check(regex(stepIdRegex).find.saveAs("challengerStepID"))
+        .check(regex(orderRegex).findAll.saveAs("challengerOrderValue"))
+        .check(regex(orderValueRegex).findAll.saveAs("challengerOrderNumber"))
       )
         .exec(session => {
           val challengerOrderValue = session("challengerOrderValue").as[Seq[String]]
@@ -90,8 +91,8 @@ object RequestsFlood {
           ("challenger[step_number]", "4"),
           ("commit", "Next")
         )).formParamSeq("${challengerOrderSeq}")
-        .check(regex("""name="challenger\[step_id\]" type="hidden" value="(.+?)"""").find.saveAs("challengerStepID"))
-        .check(regex("""name="authenticity_token" type="hidden" value="(.+?)"""").find.saveAs("authenticityToken")))
+        .check(regex(stepIdRegex).find.saveAs("challengerStepID"))
+        .check(regex(authenticityTokenRegex).find.saveAs("authenticityToken")))
         .exec(http("Get one time token")
           .get("/code")
           .check(jsonPath("$.code").saveAs("oneTimeToken")))

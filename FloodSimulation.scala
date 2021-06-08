@@ -3,13 +3,14 @@ package database
 import io.gatling.core.Predef.Simulation
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import database.requests.RequestsFlood._
 
 class FloodSimulation extends Simulation {
 
   val domain = "challengers.flood.io"
-  val longPauseMin = 10
-  val longPauseMax = 15
+  val pauseMin = 10
+  val pauseMax = 15
+  val duration = 30
+  val numberOfUsers = 10
 
   val httpProtocol = http
     .baseUrl("https://" + domain)
@@ -18,17 +19,20 @@ class FloodSimulation extends Simulation {
 
   val user_scenario = scenario("Test")
     .exec(MainPage.openHomePage)
-    .pause(longPauseMin, longPauseMax)
+    .pause(pauseMin, pauseMax)
     .exec(Steps.stepOne)
-    .pause(longPauseMin, longPauseMax)
+    .pause(pauseMin, pauseMax)
     .exec(Steps.stepTwo)
-    .pause(longPauseMin, longPauseMax)
+    .pause(pauseMin, pauseMax)
     .exec(Steps.stepThree)
-    .pause(longPauseMin, longPauseMax)
+    .pause(pauseMin, pauseMax)
     .exec(Steps.stepFour)
-    .pause(longPauseMin, longPauseMax)
+    .pause(pauseMin, pauseMax)
     .exec(Steps.stepFive)
 
 
-  setUp(user_scenario.inject(atOnceUsers(1))).protocols(httpProtocol)
+  setUp(user_scenario.inject(
+    rampUsers(numberOfUsers) during (duration seconds)
+  ).protocols(httpProtocol)
+  )
 }
