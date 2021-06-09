@@ -9,13 +9,13 @@ class FloodSimulation extends Simulation {
   val domain = "challengers.flood.io"
   val longPauseMin = 10
   val longPauseMax = 15
-  val numberOfUsers = 10
-  val duration = 10
+  val numberUsers = Integer.getInteger("users", 1)
+  val myRamp = java.lang.Long.getLong("ramp", 0L)
 
   val httpProtocol = http
     .baseUrl("https://" + domain)
     .inferHtmlResources()
-    .inferHtmlResources(BlackList(""".*\.js""", """.*\.css""", """.*\.gif""", """.*\.jpeg""", """.*\.jpg""", """.*\.ico""", """.*\.woff""", """.*\.woff2""", """.*\.(t|o)tf""", """.*\.png""", """.*detectportal\.firefox\.com.*"""), WhiteList())
+    .inferHtmlResources(BlackList(""".*\.js""", """.*css.*""", """.*\.gif""", """.*\.jpeg""", """.*\.jpg""", """.*\.ico""", """.*\.woff""", """.*\.woff2""", """.*\.(t|o)tf""", """.*\.png""", """.*detectportal\.firefox\.com.*"""), WhiteList())
     .userAgentHeader("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36")
     .disableFollowRedirect
 
@@ -38,8 +38,5 @@ class FloodSimulation extends Simulation {
     .pause(longPauseMin, longPauseMax)
     .exec(Steps.postStep5)
 
-  setUp(user_scenario.inject(
-    constantUsersPerSec(numberOfUsers) during (duration seconds)
-  ).protocols(httpProtocol)
-  )
+  setUp(user_scenario.inject(rampUsers(numberUsers).during(myRamp))).protocols(httpProtocol)
 }
