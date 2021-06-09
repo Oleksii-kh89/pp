@@ -7,57 +7,52 @@ object RequestsFlood {
   val orderSelectedRegex = """<input class="radio_buttons optional".+? value="(.+?)" />"""
   val orderRegex = """<input id="challenger_order_[0-9]+" name="(.+?)" type="hidden" value="[0-9]+" />"""
   val orderValueRegex = """<input id="challenger_order_[0-9]+" name=".+?" type="hidden" value="([0-9]+)" />"""
+  val orderValueLargestRegex = """(<span class="radio"><input class="radio_buttons optional".+? value=".+?" .+?>[0-9]+</label></span>)"""
+  val ageRegex = """id="challenger_age" name="challenger\[age\]"""
 
-  object MainPage {
-    def openHomePage = {
+  object HomePage{
+    def loadHomePage = {
       exec(http("Open Home Page")
-        .get("/")
-        .check(regex(authenticityTokenRegex).find.saveAs("authenticityToken"))
-        .check(regex(stepIdRegex).find.saveAs("challengerStepID")))
+        .get("/"))
     }
   }
 
   object Steps {
-    def stepOne = {
-      exec(http("Step 1, press Start")
-        .post("/start")
-        .formParamSeq(Seq(
-          ("utf8", "✓"),
-          ("authenticity_token", "${authenticityToken}"),
-          ("challenger[step_id]", "${challengerStepID}"),
-          ("challenger[step_number]", "1"),
-          ("commit", "Start")
-        ))
-        .check(regex(stepIdRegex).find.saveAs("challengerStepID")))
-
+    def getStep2 = {
+      exec(http("Get start")
+        .get("/step/2")
+        .check(regex(authenticityTokenRegex).find.saveAs("authenticityToken"))
+        .check(regex(stepIdRegex).find.saveAs("challengerStepID"))
+        .check(regex(ageRegex).findRandom.saveAs("challengerAge")))
     }
 
-    def stepTwo = {
-      exec(http("Step 2, choose age")
+    def postStep2 = {
+      exec(http("Post step , age")
         .post("/start")
+        .check(status.is(302))
         .formParamSeq(Seq(
           ("utf8", "✓"),
           ("authenticity_token", "${authenticityToken}"),
           ("challenger[step_id]", "${challengerStepID}"),
           ("challenger[step_number]", "2"),
-          ("challenger[age]", "31"),
+          ("challenger[age]", "${challengerAge}"),
           ("commit", "Next")
-        ))
-        .check(regex(stepIdRegex).find.saveAs("challengerStepID"))
-        .check(css(".collection_radio_buttons").findAll.saveAs("challengerLargestOrderAll"))
-        .check(regex(orderSelectedRegex).findAll.saveAs("challengerOrderSelectedAll"))
-      )
-        .exec(session => {
-          val challengerLargestOrder = session("challengerLargestOrderAll").as[Seq[String]].maxBy(x => x.toInt)
-          val challengerLargestOrderIndex = session("challengerLargestOrderAll").as[Seq[String]].indexOf(challengerLargestOrder)
-          val challengerOrderSelected = session("challengerOrderSelectedAll").as[Seq[String]].apply(challengerLargestOrderIndex)
-          session.setAll(("challengerLargestOrder", challengerLargestOrder), ("challengerOrderSelected", challengerOrderSelected))
-        })
+        )))
     }
 
-    def stepThree = {
-      exec(http("Step 3, choose the biggest num")
+    def getStep3 = {
+      exec(http("Get value")
+        .get("/step/3")
+        .check(regex(stepIdRegex).find.saveAs("challengerStepID"))
+        .check(regex(orderValueLargestRegex).findAll.transform((a) => a.toArray.max).saveAs("challengerLargestOrder"))
+        .check(regex(orderRegex).findAll.transform((a) => a.toArray.max).saveAs("challengerOrderSelected"))
+      )
+    }
+
+    def postStep3 = {
+      exec(http("Post step 3, value")
         .post("/start")
+        .check(status.is(302))
         .formParamSeq(Seq(
           ("utf8", "✓"),
           ("authenticity_token", "${authenticityToken}"),
@@ -66,7 +61,12 @@ object RequestsFlood {
           ("challenger[largest_order]", "${challengerLargestOrder}"),
           ("challenger[order_selected]", "${challengerOrderSelected}"),
           ("commit", "Next")
-        ))
+        )))
+    }
+
+    def get4 = {
+      exec(http("Get, step 4")
+        .get("/step/4")
         .check(regex(stepIdRegex).find.saveAs("challengerStepID"))
         .check(regex(orderRegex).findAll.saveAs("challengerOrderValue"))
         .check(regex(orderValueRegex).findAll.saveAs("challengerOrderNumber"))
@@ -78,29 +78,29 @@ object RequestsFlood {
 
           session.set("challengerOrderSeq", challengerOrderSeq)
         })
-
     }
-
-    def stepFour = {
-      exec(http("Step 4, Wait")
+    def post4 = {
+      exec(http("Post step 4, Wait")
         .post("/start")
+        .check(status.is(302))
         .formParamSeq(Seq(
           ("utf8", "✓"),
           ("authenticity_token", "${authenticityToken}"),
           ("challenger[step_id]", "${challengerStepID}"),
           ("challenger[step_number]", "4"),
           ("commit", "Next")
-        )).formParamSeq("${challengerOrderSeq}")
-        .check(regex(stepIdRegex).find.saveAs("challengerStepID"))
-        .check(regex(authenticityTokenRegex).find.saveAs("authenticityToken")))
-        .exec(http("Get one time token")
-          .get("/code")
-          .check(jsonPath("$.code").saveAs("oneTimeToken")))
+        )).formParamSeq("${challengerOrderSeq}"))
     }
 
-    def stepFive = {
-      exec(http("Step 5, choose token")
+    def getCode = {
+      exec(http("Get one time token")
+        .get("/code")
+        .check(jsonPath("$.code").saveAs("oneTimeToken")))
+    }
+    def postStep5 = {
+      exec(http("Post step 5, choose token")
         .post("/start")
+        .check(status.is(302))
         .formParamSeq(Seq(
           ("utf8", "✓"),
           ("authenticity_token", "${authenticityToken}"),
