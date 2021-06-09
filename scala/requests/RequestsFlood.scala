@@ -64,7 +64,7 @@ object RequestsFlood {
         )))
     }
 
-    def get4 = {
+    def getStep4 = {
       exec(http("Get, step 4")
         .get("/step/4")
         .check(regex(stepIdRegex).find.saveAs("challengerStepID"))
@@ -79,7 +79,7 @@ object RequestsFlood {
           session.set("challengerOrderSeq", challengerOrderSeq)
         })
     }
-    def post4 = {
+    def postStep4 = {
       exec(http("Post step 4, Wait")
         .post("/start")
         .check(status.is(302))
