@@ -29,7 +29,6 @@ object RequestsFlood {
     def postStep2 = {
       exec(http("Post step , age")
         .post("/start")
-        .check(status.is(302))
         .formParamSeq(Seq(
           ("utf8", "✓"),
           ("authenticity_token", "${authenticityToken}"),
@@ -37,7 +36,8 @@ object RequestsFlood {
           ("challenger[step_number]", "2"),
           ("challenger[age]", "${challengerAge}"),
           ("commit", "Next")
-        )))
+        ))
+        .check(status.is(302)))
     }
 
     def getStep3 = {
@@ -52,7 +52,6 @@ object RequestsFlood {
     def postStep3 = {
       exec(http("Post step 3, value")
         .post("/start")
-        .check(status.is(302))
         .formParamSeq(Seq(
           ("utf8", "✓"),
           ("authenticity_token", "${authenticityToken}"),
@@ -61,7 +60,8 @@ object RequestsFlood {
           ("challenger[largest_order]", "${challengerLargestOrder}"),
           ("challenger[order_selected]", "${challengerOrderSelected}"),
           ("commit", "Next")
-        )))
+        ))
+        .check(status.is(302)))
     }
 
     def getStep4 = {
@@ -82,14 +82,14 @@ object RequestsFlood {
     def postStep4 = {
       exec(http("Post step 4, Wait")
         .post("/start")
-        .check(status.is(302))
         .formParamSeq(Seq(
           ("utf8", "✓"),
           ("authenticity_token", "${authenticityToken}"),
           ("challenger[step_id]", "${challengerStepID}"),
           ("challenger[step_number]", "4"),
           ("commit", "Next")
-        )).formParamSeq("${challengerOrderSeq}"))
+        )).formParamSeq("${challengerOrderSeq}")
+        .check(status.is(302)))
     }
 
     def getCode = {
@@ -100,14 +100,14 @@ object RequestsFlood {
     def postStep5 = {
       exec(http("Post step 5, choose token")
         .post("/start")
-        .check(status.is(302))
         .formParamSeq(Seq(
           ("utf8", "✓"),
           ("authenticity_token", "${authenticityToken}"),
           ("challenger[step_id]", "${challengerStepID}"),
           ("challenger[step_number]", "5"),
           ("challenger[one_time_token]", "${oneTimeToken}"),
-          ("commit", "Next"))))
+          ("commit", "Next")))
+        .check(status.is(302)))
     }
   }
 }
