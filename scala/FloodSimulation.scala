@@ -1,4 +1,4 @@
-CHECK
+CH
 
 import io.gatling.core.Predef.Simulation
 import io.gatling.core.Predef._
