@@ -28,7 +28,6 @@ class FloodSimulation extends Simulation {
     .disableFollowRedirect
 
 
-
   object HomePage{
     def loadHomePage = {
       exec(http("Open Home Page")
