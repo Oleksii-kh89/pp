@@ -31,7 +31,7 @@ class FloodSimulation extends Simulation {
   object HomePage{
     def loadHomePage = {
       exec(http("Open Home Page")
-        .get(""))
+        .get("/"))
     }
   }
 
@@ -55,7 +55,7 @@ class FloodSimulation extends Simulation {
           ("challenger[age]", "${challengerAge}"),
           ("commit", "Next")
         ))
-        .check(status.is(302)))
+        .check(status.is(422)))
     }
 
     def getStep3 = {
@@ -79,7 +79,7 @@ class FloodSimulation extends Simulation {
           ("challenger[order_selected]", "${challengerOrderSelected}"),
           ("commit", "Next")
         ))
-        .check(status.is(302)))
+        .check(status.is(422)))
     }
 
     def getStep4 = {
@@ -107,7 +107,7 @@ class FloodSimulation extends Simulation {
           ("challenger[step_number]", "4"),
           ("commit", "Next")
         )).formParamSeq("${challengerOrderSeq}")
-        .check(status.is(302)))
+        .check(status.is(422)))
     }
 
     def getCode = {
@@ -125,7 +125,7 @@ class FloodSimulation extends Simulation {
           ("challenger[step_number]", "5"),
           ("challenger[one_time_token]", "${oneTimeToken}"),
           ("commit", "Next")))
-        .check(status.is(302)))
+        .check(status.is(422)))
     }
   }
 
