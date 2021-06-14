@@ -1,11 +1,12 @@
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
+import io.gatling.http.protocol.HttpProtocolBuilder
 
 
 class FloodSimulation extends Simulation {
 
-  val domain = "challengers.flood.io"
+  val target = "https://challengers.flood.io"
   val longPauseMin = 10
   val longPauseMax = 15
   val numberUsers = Integer.getInteger("users", 1)
@@ -21,7 +22,7 @@ class FloodSimulation extends Simulation {
   val ageRegex = """id="challenger_age" name="challenger\[age\]"""
 
   val httpProtocol = http
-    .baseUrl("https://challengers.flood.io")
+    .baseUrl(target)
     .inferHtmlResources()
     .inferHtmlResources(BlackList(""".*\.js""", """.*css.*""", """.*\.gif""", """.*\.jpeg""", """.*\.jpg""", """.*\.ico""", """.*\.woff""", """.*\.woff2""", """.*\.(t|o)tf""", """.*\.png""", """.*detectportal\.firefox\.com.*"""), WhiteList())
     .userAgentHeader("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36")
