@@ -11,14 +11,14 @@ class FloodSimulation extends Simulation {
   val numberUsers = Integer.getInteger("users", 1)
   val myRamp = java.lang.Long.getLong("ramp", 0L)
   val testDuration = Integer.getInteger("duration", 120)
-  val authenticityTokenRegex = """name="authenticity_token" type="hidden" value="(.+?)""""
-  val stepIdRegex = """name="challenger\[step_id\]" type="hidden" value="(.+?)""""
-  val orderSelectedRegex = """<input class="radio_buttons optional".+? value="(.+?)" />"""
-  val orderRegex = """<input class="radio_buttons optional".+? value="(.+?)" />"""
-  val order_Regex = """<input id="challenger_order_[0-9]+" name="(.+?)" type="hidden" value="[0-9]+" />"""
-  val orderValueRegex = """<input id="challenger_order_[0-9]+" name=".+?" type="hidden" value="([0-9]+)" />"""
-  val orderValueLargestRegex = """(<span class="radio"><input class="radio_buttons optional".+? value=".+?" .+?>[0-9]+</label></span>)"""
-  val ageRegex = """id="challenger_age" name="challenger\[age\]"""
+  val authenticityTokenRegex = /name="authenticity_token" type="hidden" value="(.+?)/
+  val stepIdRegex = /name="challenger\[step_id\]" type="hidden" value="(.+?)/
+  val orderSelectedRegex = /<input class="radio_buttons optional".+? value="(.+?)" />/
+  val orderRegex = /<input class="radio_buttons optional".+? value="(.+?)" />/
+  val order_Regex = /<input id="challenger_order_[0-9]+" name="(.+?)" type="hidden" value="[0-9]+" />/
+  val orderValueRegex = /<input id="challenger_order_[0-9]+" name=".+?" type="hidden" value="([0-9]+)" />/
+  val orderValueLargestRegex = /(<span class="radio"><input class="radio_buttons optional".+? value=".+?" .+?>[0-9]+</label></span>)/
+  val ageRegex = /id="challenger_age" name="challenger\[age\]/
 
   val httpProtocol = http
     .baseUrl("https://" + domain)
