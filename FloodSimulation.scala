@@ -11,7 +11,7 @@ class FloodSimulation extends Simulation {
   val numberUsers = Integer.getInteger("users", 1)
   val myRamp = java.lang.Long.getLong("ramp", 0L)
   val testDuration = Integer.getInteger("duration", 120)
-  val authenticityTokenRegex = """name="authenticity_token" type="hidden" value="(.+?)"""
+  val authenticityTokenRegex = "/name="authenticity_token" type="hidden" value=\"(.+?)/"
   val stepIdRegex = """name="challenger\[step_id\]" type="hidden" value="(.+?)""""
   val orderSelectedRegex = """<input class="radio_buttons optional".+? value="(.+?)" />"""
   val orderRegex = """<input class="radio_buttons optional".+? value="(.+?)" />"""
@@ -21,7 +21,7 @@ class FloodSimulation extends Simulation {
   val ageRegex = """id="challenger_age" name="challenger\[age\]"""
 
   val httpProtocol = http
-    .baseUrl("https:\\//" + domain)
+    .baseUrl("https://" + domain)
     .inferHtmlResources()
     .inferHtmlResources(BlackList(""".*\.js""", """.*css.*""", """.*\.gif""", """.*\.jpeg""", """.*\.jpg""", """.*\.ico""", """.*\.woff""", """.*\.woff2""", """.*\.(t|o)tf""", """.*\.png""", """.*detectportal\.firefox\.com.*"""), WhiteList())
     .userAgentHeader("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36")
@@ -31,7 +31,7 @@ class FloodSimulation extends Simulation {
   object HomePage{
     def loadHomePage = {
       exec(http("Open Home Page")
-        .get("/"))
+        .get(""))
     }
   }
 
