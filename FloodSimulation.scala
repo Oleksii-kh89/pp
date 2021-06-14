@@ -2,6 +2,7 @@
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.http.protocol.HttpProtocolBuilder
+import importio.gatling.http.Predef.http
 
 
 class FloodSimulation extends Simulation {
