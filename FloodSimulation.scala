@@ -14,7 +14,8 @@ class FloodSimulation extends Simulation {
   val numberUsersString = System.getProperty("users")
   val numberUserNum = Integer.parseInt(numberUsersString)
   val myRamp = java.lang.Long.getLong("ramp", 0L)
-  val testDuration = Integer.getInteger("duration", 120)
+  val testDuartionString = System.getProperty("duration")
+  val testDuration = Integer.parseInt(testDuartionString)
   
   val authenticityTokenRegex = """name="authenticity_token" type="hidden" value="(.+?)"""
   val stepIdRegex = """name="challenger\[step_id\]" type="hidden" value="(.+?)""""
