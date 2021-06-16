@@ -10,9 +10,11 @@ class FloodSimulation extends Simulation {
   val target = "https://challengers.flood.io"
   val longPauseMin = 10
   val longPauseMax = 15
+  
   val numberUsers = Integer.getInteger("users", 1)
   val myRamp = java.lang.Long.getLong("ramp", 0L)
   val testDuration = Integer.getInteger("duration", 120)
+  
   val authenticityTokenRegex = """name="authenticity_token" type="hidden" value="(.+?)"""
   val stepIdRegex = """name="challenger\[step_id\]" type="hidden" value="(.+?)""""
   val orderSelectedRegex = """<input class="radio_buttons optional".+? value="(.+?)" />"""
@@ -150,8 +152,8 @@ class FloodSimulation extends Simulation {
     .exec(Steps.postStep5)
   
   before {
-    println(s"Running test with ${userCount} users")
-    println(s"Ramping users over ${rampDuration}")
+    println(s"Running test with ${numberUsers} users")
+    println(s"Ramping users over ${myRamp}")
     println(s"Total Test duration: ${testDuration}")
   }
 
