@@ -1,0 +1,35 @@
+pipeline {
+
+    agent any
+    stages {
+
+        stage('Git') {
+            steps {
+                //git branch: 'main', url: 'https://github.com/Oleksii-kh89/pp.git'
+                git branch: 'task1', url: 'https://github.com/Oleksii-kh89/performance.git'
+            }
+        }
+        stage('Run') {
+            steps {
+                echo "You choose: ${params.Users}"
+                echo "You choose: ${params.Ramp}"
+                echo "You choose: ${params.Duration}"
+                sh 'cd /home/oleksii/gatling-charts-highcharts-bundle-3.6.0/bin;export JAVA_OPTS="-Dusers=${Users} -Dduration=${Duration} -Dramp=${Ramp} -Dname=${TestName}"; sh gatling.sh -sf /home/oleksii/gatling-charts-highcharts-bundle-3.6.0/user-files/simulations -s FloodSimulation -rf /home/oleksii/gatling-charts-highcharts-bundle-3.6.0/res'
+
+                //sh 'gatling.sh -sf /home/oleksii/gatling-charts-highcharts-bundle-3.6.0/user-files/simulations -s FloodSimulation'
+            }
+
+        }
+        stage('Report') {
+            steps {
+                publishHTML (target: [
+      allowMissing: false,
+      alwaysLinkToLastBuild: false,
+      keepAll: true,
+      reportDir: '/home/oleksii/gatling-charts-highcharts-bundle-3.6.0/res',
+      reportFiles: 'index.html',
+      reportName: "Report"])
+            }
+        }
+    }
+}
