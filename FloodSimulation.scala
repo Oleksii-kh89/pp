@@ -4,6 +4,12 @@ import io.gatling.http.Predef._
 import io.gatling.http.protocol.HttpProtocolBuilder
 import io.gatling.http.Predef.http
 
+import io.gatling.core.Predef.Simulation
+
+
+import scala.concurrent.duration.DurationInt
+import scala.language.postfixOps
+
 
 class FloodSimulation extends Simulation {
 
@@ -160,7 +166,7 @@ class FloodSimulation extends Simulation {
     println(s"Total Test duration: ${testDuration}")
   }
 
-  setUp(user_scenario.inject(rampUsers(numberUserNum).during(myRamp))).protocols(httpProtocol)
+  setUp(user_scenario.inject(rampUsers(numberUserNum).during(myRamp.seconds))).protocols(httpProtocol)
   //setUp(user_scenario.inject(rampUsers(numberUserNum).during(myRamp))).protocols(httpProtocol).maxDuration(testDuration)
 }
 
