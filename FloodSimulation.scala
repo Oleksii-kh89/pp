@@ -130,6 +130,11 @@ class FloodSimulation extends Simulation {
         .check(status.is(422)))
     }
   }
+  before {
+    println(s"Running test with ${userCount} users")
+    println(s"Ramping users over ${rampDuration}")
+    println(s"Total Test duration: ${testDuration}")
+  }
 
   val user_scenario = scenario("Test")
     .exec(HomePage.loadHomePage)
