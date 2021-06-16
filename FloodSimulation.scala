@@ -13,7 +13,8 @@ class FloodSimulation extends Simulation {
   
   val numberUsersString = System.getProperty("users")
   val numberUserNum = Integer.parseInt(numberUsersString)
-  val myRamp = java.lang.Long.getLong("ramp", 0L)
+  val myRampString = System.getProperty("ramp")
+  val myRamp = java.lang.Long.getLong(myRampString)
   val testDuartionString = System.getProperty("duration")
   val testDuration = Integer.parseInt(testDuartionString)
   
