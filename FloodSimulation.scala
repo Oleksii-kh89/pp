@@ -130,12 +130,6 @@ class FloodSimulation extends Simulation {
         .check(status.is(422)))
     }
   }
-  before {
-    println(s"Running test with ${userCount} users")
-    println(s"Ramping users over ${rampDuration}")
-    println(s"Total Test duration: ${testDuration}")
-  }
-
   val user_scenario = scenario("Test")
     .exec(HomePage.loadHomePage)
     .pause(longPauseMin, longPauseMax)
@@ -154,6 +148,12 @@ class FloodSimulation extends Simulation {
     .exec(Steps.getCode)
     .pause(longPauseMin, longPauseMax)
     .exec(Steps.postStep5)
+  
+  before {
+    println(s"Running test with ${userCount} users")
+    println(s"Ramping users over ${rampDuration}")
+    println(s"Total Test duration: ${testDuration}")
+  }
 
   setUp(user_scenario.inject(rampUsers(numberUsers).during(myRamp))).protocols(httpProtocol).maxDuration(testDuration)
 }
