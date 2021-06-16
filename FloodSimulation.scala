@@ -160,6 +160,7 @@ class FloodSimulation extends Simulation {
     println(s"Total Test duration: ${testDuration}")
   }
 
-  setUp(user_scenario.inject(rampUsers(numberUserNum).during(myRamp))).protocols(httpProtocol).maxDuration(testDuration)
+  setUp(user_scenario.inject(rampUsers(numberUserNum).during(myRamp))).protocols(httpProtocol)
+  //setUp(user_scenario.inject(rampUsers(numberUserNum).during(myRamp))).protocols(httpProtocol).maxDuration(testDuration)
 }
 
