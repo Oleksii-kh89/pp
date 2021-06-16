@@ -12,7 +12,7 @@ class FloodSimulation extends Simulation {
   val longPauseMax = 15
   
   val numberUsersString = System.getProperty("users")
-  val numberUserNum = Integer.parseInt(numberUsersString), 1)
+  val numberUserNum = Integer.parseInt(numberUsersString)
   val myRamp = java.lang.Long.getLong("ramp", 0L)
   val testDuration = Integer.getInteger("duration", 120)
   
